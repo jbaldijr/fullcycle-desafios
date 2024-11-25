@@ -1,0 +1,14 @@
+{
+    "name": "node-app",
+    "version": "1.0.0",
+    "description": "Node.js app for Full Cycle Rocks",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "mysql": "^2.18.1"
+    }
+  }
+  

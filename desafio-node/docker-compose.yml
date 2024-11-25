@@ -1,0 +1,50 @@
+services:
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    networks:
+      - node-network
+    ports:
+      - "8080:80"
+
+  node-app:
+    build:
+      context: ./node
+    container_name: node-app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node app.js
+    networks:
+      - node-network
+    tty: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./node:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=fullcycle
+    depends_on:
+      - db
+    
+  db:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: fullcycle
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - node-network
+    
+networks: 
+  node-network:
+    driver: bridge
+    name: node-network  
